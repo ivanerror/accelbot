@@ -40,7 +40,7 @@ if (LOAD_SLASH) {
   const rest = new REST({ version: "9" }).setToken(TOKEN);
   console.log("Deploying slash commands");
   rest
-    .put(Routes.applicationGuildCommands(CLIENT_ID, GUILD_ID), {
+    .put(Routes.applicationCommands(CLIENT_ID), {
       body: commands,
     })
     .then(() => {
