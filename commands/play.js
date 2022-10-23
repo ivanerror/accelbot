@@ -2,6 +2,7 @@ const { SlashCommandBuilder } = require("@discordjs/builders");
 const { EmbedBuilder } = require("discord.js");
 const { QueryType } = require("discord-player");
 const { validURL, isYoutubePlaylist } = require("../utils/validator");
+const randomUrlGen = require("random-youtube-music-video");
 
 module.exports = {
   data: new SlashCommandBuilder()
@@ -10,13 +11,12 @@ module.exports = {
     .addStringOption((option) =>
       option
         .setName("value")
-        .setDescription("URL LAGU YOUTUBE")
+        .setDescription("Url/Judul lagu dari youtube")
         .setRequired(true)
     ),
   run: async ({ client, interaction }) => {
-    console.log(interaction.member);
     if (!interaction.member.voice.channel)
-      return interaction.editReply("Masuk Channel dulu Anjing");
+      return interaction.editReply("Masuk Channel dulu om!!!");
 
     const queue = await client.player.createQueue(interaction.guild);
     if (!queue.connection)
@@ -24,7 +24,12 @@ module.exports = {
 
     const embed = new EmbedBuilder();
 
-    const value = interaction.options.getString("value");
+    let value = interaction.options.getString("value");
+
+    if (value === "random") {
+      value = await randomUrlGen.getRandomMusicVideoUrl();
+    }
+
     if (validURL(value)) {
       if (isYoutubePlaylist(value)) {
         const result = await client.player.search(value, {
@@ -54,6 +59,22 @@ module.exports = {
 
       const song = result.tracks[0];
       await queue.addTrack(song);
+
+      embed
+      .setColor("0xFF77BC")
+      .setTitle("Now Playing")
+      .setThumbnail(song.thumbnail)
+      .setDescription(`[${song.title}](${song.url})`)
+      .addFields(
+        {
+          name: "Requested By",
+          value: interaction.user.username,
+        },
+        {
+          name: "Duration",
+          value: song.duration,
+        }
+      );
     } else {
       const result = await client.player.search(value, {
         requestedBy: interaction.user,
@@ -61,12 +82,10 @@ module.exports = {
       });
 
       if (result.tracks.length === 0)
-        return interaction.editReply("No results");
+        return interaction.editReply("Ga Nemu Bos!");
 
       const song = result.tracks[0];
       await queue.addTrack(song);
-
-      console.log(interaction.user);
 
       embed
         .setColor("0xFF77BC")
@@ -81,7 +100,7 @@ module.exports = {
           {
             name: "Duration",
             value: song.duration,
-          },
+          }
         );
     }
 

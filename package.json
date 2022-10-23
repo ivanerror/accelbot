@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "nodemon index.js"
   },
   "repository": {
     "type": "git",
@@ -20,9 +20,6 @@
   "devDependencies": {
     "nodemon": "^2.0.20"
   },
-  "scripts": {
-    "start": "nodemon index.js"
-  },
   "dependencies": {
     "@discordjs/builders": "^1.2.0",
     "@discordjs/opus": "^0.8.0",
@@ -32,6 +29,7 @@
     "discord.js": "^14.4.0",
     "dotenv": "^16.0.2",
     "ffmpeg-static": "^5.1.0",
-    "opusscript": "^0.0.8"
+    "opusscript": "^0.0.8",
+    "random-youtube-music-video": "^1.0.6"
   }
 }
